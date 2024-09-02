@@ -1,5 +1,5 @@
 import './style.css';
-import Board from './board';
+import Board from './board.js';
 
 const container = document.querySelector('#container');
 
@@ -30,6 +30,29 @@ for (let i = 0; i < 8; i++) {
 
 
 const runButton = document.querySelector('#run');
+
+// runButton.addEventListener('click', () => {
+//     const theBoard = new Board();
+
+//     console.log(theBoard);
+
+//     // theBoard.printBoard();
+
+// });
+
+// runButton.addEventListener('click', () => {
+//     const theBoard = new Board();
+//     let string = '';
+//     const path = Array.from({ length: 8 }, () => Array(6).fill(0));
+
+//     let i = 1;
+//     for (const coord of theBoard.order) {
+//         path[coord[0]][coord[1]] = i;
+//         i++;
+//     }
+
+//     console.log(path);
+// });
 
 runButton.addEventListener('click', () => {
     console.log('running');

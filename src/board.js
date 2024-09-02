@@ -2,7 +2,7 @@ const TAKEN = true;
 const OPEN = false;
 const MAXROW = 8;
 const MAXCOL = 6;
-// let counter = 0;
+let counter = 0;
 
 export default class Board {
     constructor(available, words, span = false) {
@@ -24,32 +24,36 @@ export default class Board {
 
     placeWord() {
         const starts = randomize(this.available);
-
-        for (const start of starts) {
+        const length = starts.length;
+        let i = 0;
+        while (i < 5000) {
+            counter = 0;
+            const start = starts[i%length];
             const result = this.#placeWord(start, this.word);
             if (result != -1)
                 return result;
+            i++;
         }
 
         return -1;
     }
 
     #placeWord(space, subWord) {
+        // console.log(`${subWord}: ${space[0]},${space[1]}`);
+        counter++;
+        if (counter > 1000)
+            return -1;
         this.spaces[space[0]][space[1]] = TAKEN;
-        console.log(`${subWord}: ${space[0]},${space[1]}`);
-        // counter++;
-        // if (counter > 100)
-        //     return -1;
         if (subWord.length === 1) {
             const subBoards = this.getSubBoards();
             let lengths = this.lengths;
-            console.log(`${lengths}`);
+            // console.log(`${lengths}`);
             let subBoardList = [];
             for (const subBoard of subBoards) {
                 const size = subBoard.length;
-                console.log(size);
+                // console.log(size);
                 const wordLengths = findMatchingSizes(size, lengths);
-                console.log(wordLengths);
+                // console.log(wordLengths);
                 if (wordLengths.length === 0) {
                     this.spaces[space[0]][space[1]] = OPEN;
                     return -1;
@@ -154,10 +158,17 @@ export default class Board {
     }
 }
 
-function randomize(arr) {
-    const randomStart = Math.floor(Math.random() * arr.length);
-    let newArr = arr.slice(randomStart).concat(arr.slice(0, randomStart));
-    return newArr;
+function randomize(array) {
+    for (var i = array.length - 1; i > 0; i--) { 
+        // Generate random number 
+        var j = Math.floor(Math.random() * (i + 1));
+                   
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+       
+    return array;
 }
 
 
@@ -171,7 +182,7 @@ function findMatchingSizes(size, sizeArr) {
     for (let subset of sizeSet) {
         // console.log(subset);
         if (size === sumArr(subset)) {
-            console.log(subset);
+            // console.log(subset);
             return subset;
         }
     }
