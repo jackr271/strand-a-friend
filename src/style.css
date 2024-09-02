@@ -3,11 +3,14 @@ body {
     height: 100vh;
 
     display: grid;
-    grid-template: 1fr 800px 1fr / 1fr 600px 1fr;
+    grid-template: 1fr 1fr 800px 1fr / 1fr 600px 1fr;
+}
+#run {
+    grid-area: 2 / 2 / 3 / 3;
 }
 
 #container {
-    grid-area: 2 / 2 / 3 / 3;
+    grid-area: 3 / 2 / 4 / 3;
     background-color: red;
 
     padding: 5px;

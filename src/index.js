@@ -18,22 +18,44 @@ const word = 'blueberry';
 const words = ['berries', 'blueberry', 'strawberry', 'blackberry', 'booberry', 'kiwi'];
 
 
-const aBoard = new Board([[0,0], [0,1], [1,0], [1,1], [5,5], [5,4], [4,5], [4,4]]);
+// const aBoard = new Board([[0,0], [0,1], [1,0], [1,1], [5,5], [5,4], [4,5], [4,4]]);
 // const bBoard = new Board([[0,0], [0,1], [1,0], [1,1], [5,5], [5,4], [4,5], [4,4]]);
 
+let emptyBoard = [];
+for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 6; j++) {
+        emptyBoard.push([i,j]);
+    }
+}
+
+
+const runButton = document.querySelector('#run');
+
+runButton.addEventListener('click', () => {
+    console.log('running');
+    const theBoard = new Board(emptyBoard, words, true);
+
+    theBoard.printBoard();
+    const wordPos = theBoard.placeWord();
+    theBoard.printBoard();
+    console.log(wordPos);
+    console.log(theBoard.subBoards);
+});
+
+// console.log(theBoard.wordPos);
 
 // console.log(aBoard);
 
-aBoard.printBoard();
+// aBoard.printBoard();
 
-const newBoards = aBoard.getSubBoards();
+// const newBoards = aBoard.getSubBoards();
 
-aBoard.printBoard();
+// aBoard.printBoard();
 
-if (newBoards.length === 0)
-    console.log('EMPTY!');
+// if (newBoards.length === 0)
+//     console.log('EMPTY!');
 
-for (const board of newBoards) {
-    board.printBoard();
-    console.log(board);
-}
+// for (const board of newBoards) {
+//     board.printBoard();
+//     console.log(board);
+// }
