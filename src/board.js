@@ -3,6 +3,10 @@ const OPEN = false;
 const MAXROW = 8;
 const MAXCOL = 6;
 let counter = 0;
+let leftWall = 0;
+let rightWall = 0;
+let topWall = 0;
+let bottomWall = 0;
 
 export default class Board {
     constructor(available, words, span = false) {
@@ -23,7 +27,8 @@ export default class Board {
 
 
     placeWord() {
-        const starts = randomize(this.available);
+        const starts = this.#getStarts();
+        console.log(starts);
         const length = starts.length;
         let i = 0;
         while (i < 5000) {
@@ -38,13 +43,61 @@ export default class Board {
         return -1;
     }
 
+    #getStarts() {
+        if (!this.span)
+            return randomize(this.available);
+
+        const vertDistance = this.word.length - MAXROW;
+        const horDistance = this.word.length - MAXCOL;
+        let starts = this.available;
+        starts = starts.filter(element => ((element[0] <= vertDistance) || (element[0] >= MAXROW - vertDistance - 1)) || ((element[1] <= horDistance) || (element[1] >= MAXCOL - horDistance - 1)));
+        return starts;
+    }
+
+    #checkViable(space, remaining) {
+        let result = false;
+        result = ((leftWall > 0 && rightWall > 0) || (topWall > 0 && bottomWall > 0));
+        if (result)
+            return result;
+
+        if (leftWall > 0) {
+            result = result || (MAXCOL - space[1] <= remaining);
+        }
+        if (rightWall > 0) {
+            result = result || (space[1] <= remaining);
+        }
+        if (topWall > 0) {
+            result = result || (MAXROW - space[0] <= remaining);
+        }
+        if (bottomWall > 0) {
+            result = result || (space[0] <= remaining);
+        }
+        return result;
+    }
+
     #placeWord(space, subWord) {
         // console.log(`${subWord}: ${space[0]},${space[1]}`);
         counter++;
         if (counter > 1000)
             return -1;
+
         this.spaces[space[0]][space[1]] = TAKEN;
+        if (this.span) {
+            incrementWall(space[0], space[1]);
+            if (!this.#checkViable(space, subWord.length)) {
+                this.spaces[space[0]][space[1]] = OPEN;
+                decrementWall(space[0], space[1]);
+                return -1;
+            }
+        }
+
         if (subWord.length === 1) {
+            // console.log(`${leftWall}, ${rightWall}`)
+            // if (this.span && !((leftWall > 0 && rightWall > 0) || (topWall > 0 && bottomWall > 0))) {
+            //     this.spaces[space[0]][space[1]] = OPEN;
+            //     decrementWall(space[0], space[1]);
+            //     return -1;
+            // }
             const subBoards = this.getSubBoards();
             let lengths = this.lengths;
             // console.log(`${lengths}`);
@@ -56,6 +109,8 @@ export default class Board {
                 // console.log(wordLengths);
                 if (wordLengths.length === 0) {
                     this.spaces[space[0]][space[1]] = OPEN;
+                    if (this.span)
+                        decrementWall(space[0], space[1]);
                     return -1;
                 }
                 subBoardList.push([subBoard, wordLengths]);
@@ -73,6 +128,8 @@ export default class Board {
                 return [[space[0],space[1]]].concat(result);
         }
 
+        if (this.span)
+            decrementWall(space[0], space[1]);
         this.spaces[space[0]][space[1]] = OPEN;
         return -1;
     }
@@ -194,4 +251,26 @@ function sumArr(arr) {
     for (const num of arr)
         sum += num;
     return sum;
+}
+
+function incrementWall(x, y) {
+    if (x === 0)
+        topWall++;
+    else if (x === MAXROW - 1)
+        bottomWall++;
+    if (y === 0)
+        leftWall++;
+    else if (y === MAXCOL - 1)
+        rightWall++;
+}
+
+function decrementWall(x, y) {
+    if (x === 0)
+        topWall--;
+    else if (x === MAXROW - 1)
+        bottomWall--;
+    if (y === 0)
+        leftWall--;
+    else if (y === MAXCOL - 1)
+        rightWall--;
 }
