@@ -3,7 +3,9 @@ const OPEN = false;
 const MAXROW = 8;
 const MAXCOL = 6;
 const FAILED = -1;
-let timeoutCounter = 0;
+let letterCounter = 0;
+const STARTCOUNTERMAX = 500;
+const LETTERCOUNTERMAX = 1000;
 
 export default class Board {
     constructor(words, filledSpaces = [], isSpan = false) {
@@ -123,19 +125,24 @@ export default class Board {
 
     #checkViableSubBoards() {
         const subBoards = this.#buildSubBoards();
-        let lengths = [];
+        let words = [];
+        // console.log(this.laterWords);
         for (const word of this.laterWords)
-            lengths.push(word.length);
-
+            words.push(word);
+        // console.log(words);
         const subBoardList = [];
+        // this.printBoard();
 
         for (const subBoard of subBoards) {
             const size = subBoard.length; // subBoard is list of open spaces
-            const wordLengths = findMatchingSizes(size, lengths); // array of lengths of words that fit into subBoard
-            if (wordLengths.length === 0)
+            // console.log(size);
+            // console.log(words);
+            const wordList = findMatchingSizes(size, words); // array of lengths of words that fit into subBoard
+            // console.log(wordList);
+            if (wordList.length === 0)
                 return false;
-            subBoardList.push([subBoard, wordLengths]);
-            lengths = lengths.filter(element => !wordLengths.includes(element));
+            subBoardList.push([subBoard, wordList]);
+            words = words.filter(element => !wordList.includes(element));
         }
 
         this.subBoards = subBoardList;
@@ -163,10 +170,10 @@ export default class Board {
         const starts = this.placementManager.getStarts();
         const startsLength = starts.length;
 
-        let i = 0;
-        while (i < 50) {
-            timeoutCounter = 0;
-            const start = starts[i%startsLength];
+        let startCounter = 0;
+        while (startCounter < STARTCOUNTERMAX) {
+            letterCounter = 0;
+            const start = starts[startCounter % startsLength];
             const result = this.#placeLetter(start, this.word);
             if (result != FAILED)
                 return result;
@@ -177,9 +184,9 @@ export default class Board {
     }
 
     #placeLetter(position, subWord) {
-        if (timeoutCounter > 1000)
+        if (letterCounter > LETTERCOUNTERMAX)
             return FAILED;
-        timeoutCounter++;
+        letterCounter++;
 
         if (!this.placementManager.checkViable(position, subWord.length))
             return FAILED;
@@ -220,22 +227,22 @@ function randomize(array) {
     return array;
 }
 
-function findMatchingSizes(size, sizeArr) {
-    const sizeSet = sizeArr.reduce((subsets, value) => 
+function findMatchingSizes(size, words) {
+    const wordSet = words.reduce((subsets, value) => 
         subsets.concat(subsets.map(set => [value, ...set])), 
         [[]]);
 
-    for (let subset of sizeSet) {
-        if (size === sumArr(subset)) {
+    for (let subset of wordSet) {
+        if (size === sumWordLengths(subset)) {
             return subset;
         }
     }
     return [];
 }
 
-function sumArr(arr) {
+function sumWordLengths(words) {
     let sum = 0;
-    for (const num of arr)
-        sum += num;
+    for (const word of words)
+        sum += word.length;
     return sum;
 }
