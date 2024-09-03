@@ -5,22 +5,20 @@ export default function buildBoard(words){
         return -1;
 
     let current = [[words, emptyBoard()]];
-    // console.log(current);
     const wordList = [];
+    let isSpan = true; // true for first call, then set to false
 
     while (current.length > 0) {
         let upNext = [];
         for (const subBoard of current) {
-            // printSubBoard(subBoard[1])
-            let theBoard = new Board(subBoard[0], subBoard[1]);
+
+            let theBoard = new Board(subBoard[0], subBoard[1], isSpan);
+            isSpan = false;
             let newWord = theBoard.getWord();
-            // while (!newWord[0].pos) // checks if word does not have valid position and retries if not
-            //     theBoard = new Board(subBoard[0], subBoard[1]);
 
             const newSubBoards = theBoard.getSubBoards();
             if (!newWord[0].pos)
                 return buildBoard(words);
-                // printSubBoard(subBoard[1])
             for (const newSubBoard of newSubBoards)
                 upNext.push(newSubBoard);
             wordList.push(newWord);

@@ -17,7 +17,7 @@ for (let i = 0; i < 48; i++) {
 const word = 'blueberry';
 
 
-const words = ['berries', 'blueberry', 'strawberry', 'blackberry', 'booberry', 'kiwi'];
+const words = ['strawberry', 'berries', 'blueberry', 'blackberry', 'booberry', 'kiwi'];
 
 
 // const aBoard = new Board([[0,0], [0,1], [1,0], [1,1], [5,5], [5,4], [4,5], [4,4]]);

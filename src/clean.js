@@ -1,3 +1,5 @@
+import Spanagram from "./planning";
+
 const TAKEN = true;
 const OPEN = false;
 const MAXROW = 8;
@@ -11,14 +13,16 @@ export default class Board {
     constructor(words, openSpaces, isSpan = false) {
         this.spaces = Array.from({ length: MAXROW }, () => Array(MAXCOL).fill(TAKEN));
         this.size = 0;
+        this.isSpan = isSpan;
+        this.spanagramManager = null;
 
         this.#clearSpaces(openSpaces);
-        this.placementManager = this.#placementManager();
 
         this.word = words[0];
         this.laterWords = words.slice(1);
         this.subBoards = [];
 
+        this.placementManager = this.#placementManager();
         this.wordPos = this.#placeWord();
     }
 
@@ -155,11 +159,24 @@ export default class Board {
     }
 
     #placementManager() {
-        // if (span) {
-        //     return {
-        //         trySpace: 
-        //     }
-        // }
+        if (this.isSpan) {
+            console.log(this.word);
+            this.spanagramManager = new Spanagram(this.word);
+            return {
+                trySpace: (position) => {
+                    this.spanagramManager.incrementTargets(position);
+                    this.#fillSpace(position)
+                },
+                failSpace: (position) => {
+                    this.spanagramManager.decrementTargets(position);
+                    this.#clearSpace(position)
+                },
+                checkViable: (position, subWordLength) => {return this.spanagramManager.checkViable(position, subWordLength)},
+                getViableNeighbors: (position) => {return randomize(this.#getNeighbors(position[0], position[1]))},
+                getStarts: () => {return randomize(this.#getOpenSpaces())},
+                checkViableFinal: () => {return ((this.laterWords.length === 0) || this.#checkViableSubBoards())}
+            }
+        }
         return {
             trySpace: (position) => {this.#fillSpace(position)},
             failSpace: (position) => {this.#clearSpace(position)},
@@ -192,10 +209,11 @@ export default class Board {
             return FAILED;
         letterCounter++;
 
-        if (!this.placementManager.checkViable(position, subWord.length))
-            return FAILED;
-
         this.placementManager.trySpace(position);
+        if (!this.placementManager.checkViable(position, subWord.length)) {
+            this.placementManager.failSpace(position);
+            return FAILED;
+        }
 
         if (subWord.length === 1) {
             if (this.placementManager.checkViableFinal())
