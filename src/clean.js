@@ -12,10 +12,7 @@ export default class Board {
         this.spaces = Array.from({ length: MAXROW }, () => Array(MAXCOL).fill(TAKEN));
         this.size = 0;
 
-        // console.log(openSpaces);
-
         this.#clearSpaces(openSpaces);
-        // console.log(this.spaces);
         this.placementManager = this.#placementManager();
 
         this.word = words[0];
@@ -58,8 +55,6 @@ export default class Board {
     }
 
     #fillSpace(position) {
-        // console.log(this.spaces);
-        // console.log(position);
         this.spaces[position[0]][position[1]] = TAKEN;
     }
 
@@ -100,7 +95,6 @@ export default class Board {
                     openSpaces.push([i,j]);
             }
         }
-        // console.log(openSpaces);
         return openSpaces;
     }
 
@@ -113,12 +107,9 @@ export default class Board {
             for (let coord of current) {
                 const neighbors = this.#getNeighbors(coord[0], coord[1]);
                 for (let neighbor of neighbors) {
-                    // if (this.spaces[neighbor[0]][neighbor[1]] === OPEN) {
-                    upNext.push(neighbor)
-                    // console.log(neighbor);
+                    upNext.push(neighbor);
                     this.#fillSpace(neighbor);
                     available.push(neighbor);
-                    // }
                 }
             }
             current = upNext;
@@ -180,7 +171,6 @@ export default class Board {
     }
 
     #placeWord() {
-         //(span ? new Spanagram(this.word) : new NonSpanWord())
         const starts = this.placementManager.getStarts();
         const startsLength = starts.length;
 
@@ -188,7 +178,6 @@ export default class Board {
         while (startCounter < STARTCOUNTERMAX) {
             letterCounter = 0;
             const start = starts[startCounter % startsLength];
-            // console.log(starts);
             const result = this.#placeLetter(start, this.word);
             if (result != FAILED)
                 return result;
@@ -206,7 +195,6 @@ export default class Board {
         if (!this.placementManager.checkViable(position, subWord.length))
             return FAILED;
 
-        // console.log(position);
         this.placementManager.trySpace(position);
 
         if (subWord.length === 1) {
