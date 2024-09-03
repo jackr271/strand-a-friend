@@ -1,5 +1,5 @@
 import './style.css';
-import Board from './board.js';
+import Board from './clean.js';
 
 const container = document.querySelector('#container');
 
@@ -21,12 +21,12 @@ const words = ['berries', 'blueberry', 'strawberry', 'blackberry', 'booberry', '
 // const aBoard = new Board([[0,0], [0,1], [1,0], [1,1], [5,5], [5,4], [4,5], [4,4]]);
 // const bBoard = new Board([[0,0], [0,1], [1,0], [1,1], [5,5], [5,4], [4,5], [4,4]]);
 
-let emptyBoard = [];
-for (let i = 0; i < 8; i++) {
-    for (let j = 0; j < 6; j++) {
-        emptyBoard.push([i,j]);
-    }
-}
+// let emptyBoard = [];
+// for (let i = 0; i < 8; i++) {
+//     for (let j = 0; j < 6; j++) {
+//         emptyBoard.push([i,j]);
+//     }
+// }
 
 
 const runButton = document.querySelector('#run');
@@ -55,15 +55,21 @@ const runButton = document.querySelector('#run');
 // });
 
 runButton.addEventListener('click', () => {
-    console.log('running');
-    const theBoard = new Board(emptyBoard, words, true);
-
+    const theBoard = new Board(words);
+    console.log(theBoard.spaces);
     theBoard.printBoard();
-    const wordPos = theBoard.placeWord();
-    theBoard.printBoard();
-    console.log(wordPos);
-    console.log(theBoard.subBoards);
 });
+
+// runButton.addEventListener('click', () => {
+//     console.log('running');
+//     const theBoard = new Board(emptyBoard, words, true);
+
+//     theBoard.printBoard();
+//     const wordPos = theBoard.placeWord();
+//     theBoard.printBoard();
+//     console.log(wordPos);
+//     console.log(theBoard.subBoards);
+// });
 
 // console.log(theBoard.wordPos);
 
