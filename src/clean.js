@@ -8,19 +8,25 @@ const STARTCOUNTERMAX = 500;
 const LETTERCOUNTERMAX = 1000;
 
 export default class Board {
-    constructor(words, openSpaces = [], isSpan = false) {
+    constructor(words, openSpaces, isSpan = false) {
         this.spaces = Array.from({ length: MAXROW }, () => Array(MAXCOL).fill(TAKEN));
         this.size = 0;
 
-        this.placementManager = this.#placementManager();
+        // console.log(openSpaces);
 
         this.#clearSpaces(openSpaces);
+        // console.log(this.spaces);
+        this.placementManager = this.#placementManager();
 
         this.word = words[0];
         this.laterWords = words.slice(1);
         this.subBoards = [];
 
         this.wordPos = this.#placeWord();
+    }
+
+    getSubBoards() {
+        return this.subBoards;
     }
 
     getWord() {
@@ -52,6 +58,8 @@ export default class Board {
     }
 
     #fillSpace(position) {
+        // console.log(this.spaces);
+        // console.log(position);
         this.spaces[position[0]][position[1]] = TAKEN;
     }
 
@@ -92,6 +100,7 @@ export default class Board {
                     openSpaces.push([i,j]);
             }
         }
+        // console.log(openSpaces);
         return openSpaces;
     }
 
@@ -106,6 +115,7 @@ export default class Board {
                 for (let neighbor of neighbors) {
                     // if (this.spaces[neighbor[0]][neighbor[1]] === OPEN) {
                     upNext.push(neighbor)
+                    // console.log(neighbor);
                     this.#fillSpace(neighbor);
                     available.push(neighbor);
                     // }
@@ -136,22 +146,16 @@ export default class Board {
     #checkViableSubBoards() {
         const subBoards = this.#buildSubBoards();
         let words = [];
-        // console.log(this.laterWords);
         for (const word of this.laterWords)
             words.push(word);
-        // console.log(words);
         const subBoardList = [];
-        // this.printBoard();
 
         for (const subBoard of subBoards) {
             const size = subBoard.length; // subBoard is list of open spaces
-            // console.log(size);
-            // console.log(words);
             const wordList = findMatchingSizes(size, words); // array of lengths of words that fit into subBoard
-            // console.log(wordList);
             if (wordList.length === 0)
                 return false;
-            subBoardList.push([subBoard, wordList]);
+            subBoardList.push([wordList, subBoard]);
             words = words.filter(element => !wordList.includes(element));
         }
 
@@ -171,7 +175,7 @@ export default class Board {
             checkViable: (position, subWordLength) => {return true},
             getViableNeighbors: (position) => {return randomize(this.#getNeighbors(position[0], position[1]))},
             getStarts: () => {return randomize(this.#getOpenSpaces())},
-            checkViableFinal: () => {return this.#checkViableSubBoards()}
+            checkViableFinal: () => {return ((this.laterWords.length === 0) || this.#checkViableSubBoards())}
         }
     }
 
@@ -184,10 +188,11 @@ export default class Board {
         while (startCounter < STARTCOUNTERMAX) {
             letterCounter = 0;
             const start = starts[startCounter % startsLength];
+            // console.log(starts);
             const result = this.#placeLetter(start, this.word);
             if (result != FAILED)
                 return result;
-            i++;
+            startCounter++;
         }
 
         return FAILED;
@@ -201,6 +206,7 @@ export default class Board {
         if (!this.placementManager.checkViable(position, subWord.length))
             return FAILED;
 
+        // console.log(position);
         this.placementManager.trySpace(position);
 
         if (subWord.length === 1) {

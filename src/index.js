@@ -1,5 +1,6 @@
 import './style.css';
 import Board from './clean.js';
+import buildBoard from './board-builder.js';
 
 const container = document.querySelector('#container');
 
@@ -55,12 +56,17 @@ const runButton = document.querySelector('#run');
 // });
 
 runButton.addEventListener('click', () => {
-    const theBoard = new Board(words, emptyBoard);
-    console.log(theBoard.spaces);
-    theBoard.printBoard();
-    console.log(theBoard.subBoards);
-    console.log(theBoard.getWord());
+    const wordList = buildBoard(words);
+    console.log(`here: ${wordList}`);
 });
+
+// runButton.addEventListener('click', () => {
+//     const theBoard = new Board(words, emptyBoard);
+//     console.log(theBoard.spaces);
+//     theBoard.printBoard();
+//     console.log(theBoard.subBoards);
+//     console.log(theBoard.getWord());
+// });
 
 // runButton.addEventListener('click', () => {
 //     console.log('running');
