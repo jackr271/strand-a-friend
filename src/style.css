@@ -22,4 +22,23 @@ body {
 
 .mini {
     background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.letter {
+    font-size: xx-large;
+    font-weight: 800;
+}
+
+/* .word-0 {
+    background-color: yellow;
+} */
+
+.line {
+    position: absolute;
+    background-color: rgba(0, 255, 13, 0.4);
+    height: 20px;
+    transform-origin: top left;
 }

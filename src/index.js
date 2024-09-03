@@ -2,12 +2,14 @@ import './style.css';
 import Board from './clean.js';
 import buildBoard from './board-builder.js';
 import printWords from './display.js';
+import displayWords from './display.js';
 
 const container = document.querySelector('#container');
 
 for (let i = 0; i < 48; i++) {
     const mini = document.createElement('div');
     mini.classList = 'mini';
+    mini.id = `mini-${i}`;
     container.appendChild(mini);
 };
 
@@ -57,8 +59,12 @@ const runButton = document.querySelector('#run');
 // });
 
 runButton.addEventListener('click', () => {
+    window.removeEventListener('resize',() => {});
     const wordList = buildBoard(words);
-    printWords(wordList);
+    displayWords(wordList);
+    window.addEventListener('resize', () => {
+        displayWords(wordList);
+    });
 });
 
 // runButton.addEventListener('click', () => {
