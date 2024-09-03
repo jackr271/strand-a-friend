@@ -1,6 +1,7 @@
 import './style.css';
 import Board from './clean.js';
 import buildBoard from './board-builder.js';
+import printWords from './display.js';
 
 const container = document.querySelector('#container');
 
@@ -57,7 +58,7 @@ const runButton = document.querySelector('#run');
 
 runButton.addEventListener('click', () => {
     const wordList = buildBoard(words);
-    console.log(`here: ${wordList}`);
+    printWords(wordList);
 });
 
 // runButton.addEventListener('click', () => {
