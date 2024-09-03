@@ -8,13 +8,13 @@ const STARTCOUNTERMAX = 500;
 const LETTERCOUNTERMAX = 1000;
 
 export default class Board {
-    constructor(words, filledSpaces = [], isSpan = false) {
-        this.spaces = Array.from({ length: MAXROW }, () => Array(MAXCOL).fill(OPEN));
-        this.size = MAXCOL*MAXROW;
+    constructor(words, openSpaces = [], isSpan = false) {
+        this.spaces = Array.from({ length: MAXROW }, () => Array(MAXCOL).fill(TAKEN));
+        this.size = 0;
 
         this.placementManager = this.#placementManager();
 
-        this.#fillSpaces(filledSpaces);
+        this.#clearSpaces(openSpaces);
 
         this.word = words[0];
         this.laterWords = words.slice(1);
@@ -44,10 +44,10 @@ export default class Board {
         console.log(string);
     }
 
-    #fillSpaces(filledSpaces) {
-        for (let coords of filledSpaces) {
-            this.spaces[coords[0]][coords[1]] = TAKEN;
-            this.size--;
+    #clearSpaces(openSpaces) {
+        for (let coords of openSpaces) {
+            this.spaces[coords[0]][coords[1]] = OPEN;
+            this.size++;
         }
     }
 

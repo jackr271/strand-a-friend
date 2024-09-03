@@ -21,12 +21,12 @@ const words = ['berries', 'blueberry', 'strawberry', 'blackberry', 'booberry', '
 // const aBoard = new Board([[0,0], [0,1], [1,0], [1,1], [5,5], [5,4], [4,5], [4,4]]);
 // const bBoard = new Board([[0,0], [0,1], [1,0], [1,1], [5,5], [5,4], [4,5], [4,4]]);
 
-// let emptyBoard = [];
-// for (let i = 0; i < 8; i++) {
-//     for (let j = 0; j < 6; j++) {
-//         emptyBoard.push([i,j]);
-//     }
-// }
+let emptyBoard = [];
+for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 6; j++) {
+        emptyBoard.push([i,j]);
+    }
+}
 
 
 const runButton = document.querySelector('#run');
@@ -55,7 +55,7 @@ const runButton = document.querySelector('#run');
 // });
 
 runButton.addEventListener('click', () => {
-    const theBoard = new Board(words);
+    const theBoard = new Board(words, emptyBoard);
     console.log(theBoard.spaces);
     theBoard.printBoard();
     console.log(theBoard.subBoards);
