@@ -59,6 +59,7 @@ runButton.addEventListener('click', () => {
     console.log(theBoard.spaces);
     theBoard.printBoard();
     console.log(theBoard.subBoards);
+    console.log(theBoard.getWord());
 });
 
 // runButton.addEventListener('click', () => {

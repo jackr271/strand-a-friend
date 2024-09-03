@@ -20,7 +20,17 @@ export default class Board {
         this.laterWords = words.slice(1);
         this.subBoards = [];
 
-        this.#placeWord();
+        this.wordPos = this.#placeWord();
+    }
+
+    getWord() {
+        let i = 0;
+        const result = [];
+        while (i < this.word.length) {
+            result.push({pos: this.wordPos[i], letter: this.word[i]});
+            i++;
+        }
+        return result;
     }
 
     printBoard() {
