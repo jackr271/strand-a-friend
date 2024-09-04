@@ -1,181 +1,39 @@
-const TAKEN = true;
-const OPEN = false;
-const MAXROW = 8;
-const MAXCOL = 6;
-let counter = 0;
-let leftWall = 0;
-let rightWall = 0;
-let topWall = 0;
-let bottomWall = 0;
+import {TAKEN, OPEN, MAXROW, MAXCOL, FAILED} from './constants.js';
+import Spanagram from "./spanagram.js";
+
+let letterCounter = 0;
+const STARTCOUNTERMAX = 500;
+const LETTERCOUNTERMAX = 1000;
 
 export default class Board {
-    constructor(available, words, span = false) {
+    constructor(words, openSpaces, isSpan = false) {
         this.spaces = Array.from({ length: MAXROW }, () => Array(MAXCOL).fill(TAKEN));
-        this.available = available;
         this.size = 0;
-        this.span = span; // whether or not spanagram word
-        console.log(words);
+        this.isSpan = isSpan;
+        this.spanagramManager = null;
 
-        for (let coords of available) {
-            this.spaces[coords[0]][coords[1]] = OPEN;
-            this.size++;
-        }
+        this.#clearSpaces(openSpaces);
 
         this.word = words[0];
-        this.lengths = words.slice(1).map((x) => x.length);
-    }
+        this.laterWords = words.slice(1);
+        this.subBoards = [];
 
-
-    placeWord() {
-        const starts = this.#getStarts();
-        console.log(starts);
-        const length = starts.length;
-        let i = 0;
-        while (i < 5000) {
-            counter = 0;
-            const start = starts[i%length];
-            const result = this.#placeWord(start, this.word);
-            if (result != -1)
-                return result;
-            i++;
-        }
-
-        return -1;
-    }
-
-    #getStarts() {
-        if (!this.span)
-            return randomize(this.available);
-
-        const vertDistance = this.word.length - MAXROW;
-        const horDistance = this.word.length - MAXCOL;
-        let starts = this.available;
-        starts = starts.filter(element => ((element[0] <= vertDistance) || (element[0] >= MAXROW - vertDistance - 1)) || ((element[1] <= horDistance) || (element[1] >= MAXCOL - horDistance - 1)));
-        return starts;
-    }
-
-    #checkViable(space, remaining) {
-        let result = false;
-        result = ((leftWall > 0 && rightWall > 0) || (topWall > 0 && bottomWall > 0));
-        if (result)
-            return result;
-
-        if (leftWall > 0) {
-            result = result || (MAXCOL - space[1] <= remaining);
-        }
-        if (rightWall > 0) {
-            result = result || (space[1] <= remaining);
-        }
-        if (topWall > 0) {
-            result = result || (MAXROW - space[0] <= remaining);
-        }
-        if (bottomWall > 0) {
-            result = result || (space[0] <= remaining);
-        }
-        return result;
-    }
-
-    #placeWord(space, subWord) {
-        // console.log(`${subWord}: ${space[0]},${space[1]}`);
-        counter++;
-        if (counter > 1000)
-            return -1;
-
-        this.spaces[space[0]][space[1]] = TAKEN;
-        if (this.span) {
-            incrementWall(space[0], space[1]);
-            if (!this.#checkViable(space, subWord.length)) {
-                this.spaces[space[0]][space[1]] = OPEN;
-                decrementWall(space[0], space[1]);
-                return -1;
-            }
-        }
-
-        if (subWord.length === 1) {
-            // console.log(`${leftWall}, ${rightWall}`)
-            // if (this.span && !((leftWall > 0 && rightWall > 0) || (topWall > 0 && bottomWall > 0))) {
-            //     this.spaces[space[0]][space[1]] = OPEN;
-            //     decrementWall(space[0], space[1]);
-            //     return -1;
-            // }
-            const subBoards = this.getSubBoards();
-            let lengths = this.lengths;
-            // console.log(`${lengths}`);
-            let subBoardList = [];
-            for (const subBoard of subBoards) {
-                const size = subBoard.length;
-                // console.log(size);
-                const wordLengths = findMatchingSizes(size, lengths);
-                // console.log(wordLengths);
-                if (wordLengths.length === 0) {
-                    this.spaces[space[0]][space[1]] = OPEN;
-                    if (this.span)
-                        decrementWall(space[0], space[1]);
-                    return -1;
-                }
-                subBoardList.push([subBoard, wordLengths]);
-                lengths = lengths.filter(element => !wordLengths.includes(element));
-            }
-            if (this.span && subBoardList.length < 2)
-                return -1;
-            this.subBoards = subBoardList;
-            return [[space[0],space[1]]];
-        }
-        const openNeighbors = randomize(this.#getNeighbors(space[0],space[1]));
-        for (const neighbor of openNeighbors) {
-            const result = this.#placeWord(neighbor, subWord.slice(1));
-            if (result != -1)
-                return [[space[0],space[1]]].concat(result);
-        }
-
-        if (this.span)
-            decrementWall(space[0], space[1]);
-        this.spaces[space[0]][space[1]] = OPEN;
-        return -1;
+        this.placementManager = this.#placementManager();
+        this.wordPos = this.#placeWord();
     }
 
     getSubBoards() {
-        let subBoards = [];
-        let openSpaces = [];
-        for (let i = 0; i < MAXROW; i++) {
-            for (let j = 0; j < MAXCOL; j++) {
-                if (this.spaces[i][j] === OPEN)
-                    openSpaces.push([i,j]);
-            }
-        }
-
-        for (let i = 0; i < MAXROW; i++) {
-            for (let j = 0; j < MAXCOL; j++) {
-                if (this.spaces[i][j] === OPEN)
-                    subBoards.push(this.#getSubBoard(i, j));
-            }
-        }
-
-        for (let coords of openSpaces) {
-            this.spaces[coords[0]][coords[1]] = OPEN;
-        }
-        return subBoards;
+        return this.subBoards;
     }
 
-    #getSubBoard(i, j) {
-        let available = [[i, j]];
-        this.spaces[i][j] = TAKEN;
-        let current = [[i, j]];
-        while (current.length > 0) {
-            let upNext = [];
-            for (let coord of current) {
-                const neighbors = this.#getNeighbors(coord[0], coord[1]);
-                for (let neighbor of neighbors) {
-                    // if (this.spaces[neighbor[0]][neighbor[1]] === OPEN) {
-                    upNext.push(neighbor)
-                    this.spaces[neighbor[0]][neighbor[1]] = TAKEN;
-                    available.push(neighbor);
-                    // }
-                }
-            }
-            current = upNext;
+    getWord() {
+        let i = 0;
+        const result = [];
+        while (i < this.word.length) {
+            result.push({pos: this.wordPos[i], letter: this.word[i]});
+            i++;
         }
-        return available;
+        return result;
     }
 
     printBoard() {
@@ -187,6 +45,21 @@ export default class Board {
             string += '\n';
         }
         console.log(string);
+    }
+
+    #clearSpaces(openSpaces) {
+        for (let coords of openSpaces) {
+            this.spaces[coords[0]][coords[1]] = OPEN;
+            this.size++;
+        }
+    }
+
+    #fillSpace(position) {
+        this.spaces[position[0]][position[1]] = TAKEN;
+    }
+
+    #clearSpace(position) {
+        this.spaces[position[0]][position[1]] = OPEN;
     }
 
     #getNeighbors(i, j) {
@@ -213,6 +86,149 @@ export default class Board {
         }
         return neighbors;
     }
+
+    #getOpenSpaces() {
+        const openSpaces = [];
+        for (let i = 0; i < MAXROW; i++){
+            for (let j = 0; j < MAXCOL; j++) {
+                if (this.spaces[i][j] === OPEN)
+                    openSpaces.push([i,j]);
+            }
+        }
+        return openSpaces;
+    }
+
+    #getSubBoard(i, j) {
+        let available = [[i, j]];
+        this.spaces[i][j] = TAKEN;
+        let current = [[i, j]];
+        while (current.length > 0) {
+            let upNext = [];
+            for (let coord of current) {
+                const neighbors = this.#getNeighbors(coord[0], coord[1]);
+                for (let neighbor of neighbors) {
+                    upNext.push(neighbor);
+                    this.#fillSpace(neighbor);
+                    available.push(neighbor);
+                }
+            }
+            current = upNext;
+        }
+        return available;
+    }
+
+    #buildSubBoards() {
+        const subBoards = [];
+        const openSpaces = this.#getOpenSpaces();
+
+        for (let i = 0; i < MAXROW; i++) {
+            for (let j = 0; j < MAXCOL; j++) {
+                if (this.spaces[i][j] === OPEN)
+                    subBoards.push(this.#getSubBoard(i, j));
+            }
+        }
+
+        for (const space of openSpaces)
+            this.#clearSpace(space);
+
+        return subBoards;
+    }
+
+    #checkViableSubBoards() {
+        const subBoards = this.#buildSubBoards();
+        let words = [];
+        for (const word of this.laterWords)
+            words.push(word);
+        const subBoardList = [];
+
+        for (const subBoard of subBoards) {
+            const size = subBoard.length; // subBoard is list of open spaces
+            const wordList = findMatchingSizes(size, words); // array of lengths of words that fit into subBoard
+            if (wordList.length === 0)
+                return false;
+            subBoardList.push([wordList, subBoard]);
+            words = words.filter(element => !wordList.includes(element));
+        }
+
+        this.subBoards = subBoardList;
+        return true;
+    }
+
+    #placementManager() {
+        if (this.isSpan) {
+            this.spanagramManager = new Spanagram(this.word);
+            return {
+                trySpace: (position) => {
+                    this.spanagramManager.incrementTargets(position);
+                    this.#fillSpace(position)
+                },
+                failSpace: (position) => {
+                    this.spanagramManager.decrementTargets(position);
+                    this.#clearSpace(position)
+                },
+                checkViable: (position, subWordLength) => {return this.spanagramManager.checkViable(position, subWordLength)},
+                getViableNeighbors: (position) => {return randomize(this.#getNeighbors(position[0], position[1]))},
+                getStarts: () => {return randomize(this.#getOpenSpaces())},
+                checkViableFinal: () => {return ((this.laterWords.length === 0) || this.#checkViableSubBoards())}
+            }
+        }
+        return {
+            trySpace: (position) => {this.#fillSpace(position)},
+            failSpace: (position) => {this.#clearSpace(position)},
+            checkViable: (position, subWordLength) => {return true},
+            getViableNeighbors: (position) => {return randomize(this.#getNeighbors(position[0], position[1]))},
+            getStarts: () => {return randomize(this.#getOpenSpaces())},
+            checkViableFinal: () => {return ((this.laterWords.length === 0) || this.#checkViableSubBoards())}
+        }
+    }
+
+    #placeWord() {
+        const starts = this.placementManager.getStarts();
+        const startsLength = starts.length;
+
+        let startCounter = 0;
+        while (startCounter < STARTCOUNTERMAX) {
+            letterCounter = 0;
+            const start = starts[startCounter % startsLength];
+            const result = this.#placeLetter(start, this.word);
+            if (result != FAILED)
+                return result;
+            startCounter++;
+        }
+
+        return FAILED;
+    }
+
+    #placeLetter(position, subWord) {
+        if (letterCounter > LETTERCOUNTERMAX)
+            return FAILED;
+        letterCounter++;
+
+        this.placementManager.trySpace(position);
+        if (!this.placementManager.checkViable(position, subWord.length)) {
+            this.placementManager.failSpace(position);
+            return FAILED;
+        }
+
+        if (subWord.length === 1) {
+            if (this.placementManager.checkViableFinal())
+                return [position];
+            else {
+                this.placementManager.failSpace(position);
+                return FAILED;
+            }
+        }
+
+        const openNeighbors = this.placementManager.getViableNeighbors(position);
+        for (const neighbor of openNeighbors) {
+            const result = this.#placeLetter(neighbor, subWord.slice(1));
+            if (result != FAILED)
+                return [position].concat(result);
+        }
+
+        this.placementManager.failSpace(position);
+        return FAILED;
+    }
 }
 
 function randomize(array) {
@@ -228,49 +244,22 @@ function randomize(array) {
     return array;
 }
 
-
-function findMatchingSizes(size, sizeArr) {
-    const sizeSet = sizeArr.reduce((subsets, value) => 
+function findMatchingSizes(size, words) {
+    const wordSet = words.reduce((subsets, value) => 
         subsets.concat(subsets.map(set => [value, ...set])), 
         [[]]);
 
-    // console.log(sizeSet);
-    
-    for (let subset of sizeSet) {
-        // console.log(subset);
-        if (size === sumArr(subset)) {
-            // console.log(subset);
+    for (let subset of wordSet) {
+        if (size === sumWordLengths(subset)) {
             return subset;
         }
     }
     return [];
 }
 
-function sumArr(arr) {
+function sumWordLengths(words) {
     let sum = 0;
-    for (const num of arr)
-        sum += num;
+    for (const word of words)
+        sum += word.length;
     return sum;
-}
-
-function incrementWall(x, y) {
-    if (x === 0)
-        topWall++;
-    else if (x === MAXROW - 1)
-        bottomWall++;
-    if (y === 0)
-        leftWall++;
-    else if (y === MAXCOL - 1)
-        rightWall++;
-}
-
-function decrementWall(x, y) {
-    if (x === 0)
-        topWall--;
-    else if (x === MAXROW - 1)
-        bottomWall--;
-    if (y === 0)
-        leftWall--;
-    else if (y === MAXCOL - 1)
-        rightWall--;
 }

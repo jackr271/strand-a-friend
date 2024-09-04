@@ -1,8 +1,10 @@
-import Board from "./clean.js";
+import {MAXROW, MAXCOL, FAILED} from './constants.js';
+import Board from "./board.js";
+
 
 export default function buildBoard(words){
     if (!checkValid(words))
-        return -1;
+        return FAILED;
 
     let current = [[words, emptyBoard()]];
     const wordList = [];
@@ -31,31 +33,36 @@ export default function buildBoard(words){
 
 
 function checkValid(words) {
-    return true; // TEMPORARY
+    let result = (words[0].length >= MAXCOL);
+    result = (result && words.slice(1).reduce((value, currentWord) => value && (currentWord.length >= 4), true));
+    const charSum = words.reduce((total, currentWord) => total + currentWord.length, 0);
+    result = (result && (charSum === (MAXCOL * MAXROW)));
+    
+    return result;
 }
 
 function emptyBoard() {
     let emptyBoard = [];
-    for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 6; j++) {
+    for (let i = 0; i < MAXROW; i++) {
+        for (let j = 0; j < MAXCOL; j++) {
             emptyBoard.push([i,j]);
         }
     }
     return emptyBoard;
 }
 
-function printSubBoard(openSpaces) {
-    const arr = Array.from({ length: 8 }, () => Array(6).fill('1'));
+// function printSubBoard(openSpaces) {
+//     const arr = Array.from({ length: 8 }, () => Array(6).fill('1'));
 
-    for (const space of openSpaces)
-        arr[space[0]][space[1]] = '0';
+//     for (const space of openSpaces)
+//         arr[space[0]][space[1]] = '0';
 
-    let string = '';
-    for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 6; j++) {
-            string += `${arr[i][j]}, `
-        }
-        string += '\n';
-    }
-    console.log(string);
-}
+//     let string = '';
+//     for (let i = 0; i < 8; i++) {
+//         for (let j = 0; j < 6; j++) {
+//             string += `${arr[i][j]}, `
+//         }
+//         string += '\n';
+//     }
+//     console.log(string);
+// }

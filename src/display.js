@@ -1,5 +1,4 @@
 export default function displayWords(wordList) {
-    // printWords(wordList);
     renderWords(wordList);
 }
 
@@ -17,11 +16,9 @@ function renderWords(wordList) {
 
     let wordNum = 0;
     for (const word of wordList) {
-        console.log(word);
         let prev = null;
 
         for (const letter of word) {
-            console.log(letter.pos);
             const i = letter.pos[0];
             const j = letter.pos[1];
             const mini = container.querySelector(`#mini-${i * 6 + j}`);
@@ -36,37 +33,6 @@ function renderWords(wordList) {
         }
 
     }
-}
-
-function buildGrid(wordList) {
-    const arr = Array.from({ length: 8 }, () => Array(6).fill('0'));
-    let wordNum = 0;
-    for (const word of wordList) {
-        for (const letter of word) {
-            if (!letter.pos)
-                console.log(`Word: ${word.reduce((toPrint, x) => toPrint + x.letter, '')},  ${word.reduce((toPrint, x) => toPrint + String(x.pos), '')}`);
-            const i = letter.pos[0];
-            const j = letter.pos[1];
-            arr[i][j] = ([wordNum, letter.letter]);
-        }
-        wordNum++;
-    }
-
-    return arr;
-}
-
-function printWords(wordList) {
-
-    let wordGrid = buildGrid(wordList);
-
-    let string = '';
-    for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 6; j++) {
-            string += `${wordGrid[i][j][1]}, `
-        }
-        string += '\n';
-    }
-    console.log(string);
 }
 
 function drawLineBetweenPoints(gridItem1, gridItem2) {
@@ -96,3 +62,34 @@ function drawLineBetweenPoints(gridItem1, gridItem2) {
     // Append the line to the grid container
     document.querySelector('#container').appendChild(line);
 }
+
+// function buildGrid(wordList) {
+//     const arr = Array.from({ length: 8 }, () => Array(6).fill('0'));
+//     let wordNum = 0;
+//     for (const word of wordList) {
+//         for (const letter of word) {
+//             if (!letter.pos)
+//                 console.log(`Word: ${word.reduce((toPrint, x) => toPrint + x.letter, '')},  ${word.reduce((toPrint, x) => toPrint + String(x.pos), '')}`);
+//             const i = letter.pos[0];
+//             const j = letter.pos[1];
+//             arr[i][j] = ([wordNum, letter.letter]);
+//         }
+//         wordNum++;
+//     }
+
+//     return arr;
+// }
+
+// function printWords(wordList) {
+
+//     let wordGrid = buildGrid(wordList);
+
+//     let string = '';
+//     for (let i = 0; i < 8; i++) {
+//         for (let j = 0; j < 6; j++) {
+//             string += `${wordGrid[i][j][1]}, `
+//         }
+//         string += '\n';
+//     }
+//     console.log(string);
+// }

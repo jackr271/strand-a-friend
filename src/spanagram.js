@@ -1,26 +1,4 @@
-const HORIZONTAL = 'h';
-const VERTICAL = 'v';
-const TOP = 't';
-const BOTTOM = 'b';
-const LEFT = 'l';
-const RIGHT = 'r';
-const TAKEN = true;
-const OPEN = false;
-const MAXROW = 8;
-const MAXCOL = 6;
-const FAILED = -1;
-
-/* 
-
-make separate spanagram placement function
-    1. determines horizontal or vertical
-    2. determines order of walls
-    3. sets possible starting locations based on word-length, wall targets
-    4. creates neighbor list with a weighted function where two axes are separeted and :
-        a. target-axis-bias = (distanceFromTarget / remainingLength) can be negative to move left or positive to move right
-        b. e.g. neighbors = [i+1,j], [i+1,j+1], [i+1,j-1], [i,j+1], [i,j], [i,j-1], ...
-
-*/
+import {HORIZONTAL, VERTICAL, TOP, BOTTOM, LEFT, RIGHT, TAKEN, OPEN, MAXROW, MAXCOL, FAILED} from './constants.js';
 
 export default class Spanagram {
 
