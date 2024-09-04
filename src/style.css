@@ -11,7 +11,7 @@ body {
 
 #container {
     grid-area: 3 / 2 / 4 / 3;
-    background-color: red;
+    /* background-color: red; */
 
     padding: 5px;
 
@@ -21,7 +21,7 @@ body {
 }
 
 .mini {
-    background-color: white;
+    /* background-color: white; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -38,7 +38,12 @@ body {
 
 .line {
     position: absolute;
-    background-color: rgba(0, 255, 13, 0.4);
-    height: 20px;
-    transform-origin: top left;
+    background-color: rgba(112, 186, 255, 0.8);
+    z-index: -1;
+}
+
+.circle {
+    position: absolute;
+    background-color: rgb(112, 186, 255);
+    z-index: -1;
 }

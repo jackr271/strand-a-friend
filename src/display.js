@@ -2,17 +2,15 @@ export default function displayWords(wordList) {
     renderWords(wordList);
 }
 
+let isSpan = true;
+const color = `145, 255, 112`;
+
 function renderWords(wordList) {
 
     const container = document.querySelector('#container');
+    isSpan = true;
 
-    const minis = container.querySelectorAll('.mini');
-    for (const mini of minis)
-        mini.innerHTML = '';
-
-    const lines = document.querySelectorAll('.line');
-    for (const line of lines)
-        line.remove();
+    clearGrid();
 
     let wordNum = 0;
     for (const word of wordList) {
@@ -27,21 +25,41 @@ function renderWords(wordList) {
             letterHolder.innerText = letter.letter.toUpperCase();
             mini.appendChild(letterHolder);
 
+            drawCircle(mini);
+
             if (prev)
-                drawLineBetweenPoints(prev, letterHolder);
-            prev = letterHolder;
+                drawLineBetweenPoints(prev, mini);
+            prev = mini;
         }
+
+        isSpan = false;
 
     }
 }
 
+function clearGrid() {
+    const minis = container.querySelectorAll('.mini');
+    for (const mini of minis)
+        mini.innerHTML = '';
+
+    const lines = document.querySelectorAll('.line');
+    for (const line of lines)
+        line.remove();
+
+    const circles = document.querySelectorAll('.circle');
+    for (const circle of circles)
+        circle.remove();
+}
+
 function drawLineBetweenPoints(gridItem1, gridItem2) {
+    // console.log(gridItem1);
+    // console.log(gridItem1.getBoundingClientRect());
     const start = gridItem1.getBoundingClientRect();
     const end = gridItem2.getBoundingClientRect();
 
     // Calculate the difference in x and y coordinates
-    const deltaX = end.left - start.left;
-    const deltaY = end.top - start.top;
+    const deltaX = getCenter(end)[0] - getCenter(start)[0];
+    const deltaY = getCenter(end)[1] - getCenter(start)[1];
 
     // Calculate the length of the line (using the distance formula)
     const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
@@ -49,18 +67,54 @@ function drawLineBetweenPoints(gridItem1, gridItem2) {
     // Calculate the angle of the line
     const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
 
+    const height = 20;
+
     // Create a line element
     const line = document.createElement('div');
     line.className = 'line';
     line.style.width = `${length}px`;
-    line.style.transform = `rotate(${angle}deg)`;
+    line.style.height = `${height}px`;
 
     // Position the line at the starting point
-    line.style.top = `${start.top + window.scrollY + start.height / 2}px`;
-    line.style.left = `${start.left + window.scrollX + start.width / 2}px`;
+    line.style.top = `${(start.top + start.bottom - height) / 2}px`;
+    line.style.left = `${(start.left + start.right) / 2}px`;
+    line.style.transformOrigin = 'left';
+    line.style.transform = `rotate(${angle}deg)`;
+
+    if (isSpan)
+        line.style.backgroundColor = `rgba(${color}, 0.8)`;
 
     // Append the line to the grid container
     document.querySelector('#container').appendChild(line);
+}
+
+function drawCircle(gridItem) {
+    // console.log(gridItem);
+    // console.log(gridItem.getBoundingClientRect());
+    const center = getCenter(gridItem.getBoundingClientRect());
+    // console.log(center);
+    const circle = document.createElement('div');
+    const radius = 30;
+
+    circle.classList = 'circle';
+    circle.style.width = `${2*radius}px`;
+    circle.style.height = `${2*radius}px`;
+    circle.style.borderRadius = `100%`;
+    circle.style.top = `${center[1] - radius}px`;
+    circle.style.left = `${center[0] - radius}px`;
+
+    if (isSpan)
+        circle.style.backgroundColor = `rgba(${color}, 1)`;
+
+    // console.log(circle.style.top);
+    document.querySelector('#container').appendChild(circle);
+}
+
+function getCenter(rectangle) {
+    const x = (rectangle.left + rectangle.right) / 2;
+    const y = (rectangle.top + rectangle.bottom) / 2;
+
+    return [x, y];
 }
 
 // function buildGrid(wordList) {
