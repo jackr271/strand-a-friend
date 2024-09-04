@@ -76,8 +76,8 @@ function drawLineBetweenPoints(gridItem1, gridItem2) {
     line.style.height = `${height}px`;
 
     // Position the line at the starting point
-    line.style.top = `${(start.top + start.bottom - height) / 2}px`;
-    line.style.left = `${(start.left + start.right) / 2}px`;
+    line.style.top = `${(start.top + start.bottom - height) / 2 + window.scrollY}px`;
+    line.style.left = `${(start.left + start.right) / 2 + window.scrollX}px`;
     line.style.transformOrigin = 'left';
     line.style.transform = `rotate(${angle}deg)`;
 
@@ -100,8 +100,8 @@ function drawCircle(gridItem) {
     circle.style.width = `${2*radius}px`;
     circle.style.height = `${2*radius}px`;
     circle.style.borderRadius = `100%`;
-    circle.style.top = `${center[1] - radius}px`;
-    circle.style.left = `${center[0] - radius}px`;
+    circle.style.top = `${center[1] - radius + window.scrollY}px`;
+    circle.style.left = `${center[0] - radius + window.scrollX}px`;
 
     if (isSpan)
         circle.style.backgroundColor = `rgba(${color}, 1)`;
