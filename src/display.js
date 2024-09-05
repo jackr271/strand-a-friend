@@ -7,7 +7,7 @@ const color = `145, 255, 112`;
 
 function renderWords(wordList) {
 
-    const container = document.querySelector('#container');
+    const container = document.querySelector('.board');
     isSpan = true;
 
     clearGrid();
@@ -38,7 +38,7 @@ function renderWords(wordList) {
 }
 
 function clearGrid() {
-    const minis = container.querySelectorAll('.mini');
+    const minis = document.querySelectorAll('.mini');
     for (const mini of minis)
         mini.innerHTML = '';
 
@@ -85,10 +85,11 @@ function drawLineBetweenPoints(gridItem1, gridItem2) {
         line.style.backgroundColor = `rgba(${color}, 0.8)`;
 
     // Append the line to the grid container
-    document.querySelector('#container').appendChild(line);
+    document.querySelector('.board').appendChild(line);
 }
 
 function drawCircle(gridItem) {
+    console.log('called');
     // console.log(gridItem);
     // console.log(gridItem.getBoundingClientRect());
     const center = getCenter(gridItem.getBoundingClientRect());
@@ -107,7 +108,7 @@ function drawCircle(gridItem) {
         circle.style.backgroundColor = `rgba(${color}, 1)`;
 
     // console.log(circle.style.top);
-    document.querySelector('#container').appendChild(circle);
+    document.querySelector('.board').appendChild(circle);
 }
 
 function getCenter(rectangle) {
