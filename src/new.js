@@ -49,7 +49,7 @@ function loadMobile() {
     const generateButton = document.querySelector('.run');
     generateButton.addEventListener('click', () => {
         const result = generateBoard();
-        if (result === null)
+        if (!result)
             return;
 
         body.innerHTML = '';
@@ -93,7 +93,6 @@ function buildInputsContainer() {
     addWordButton.addEventListener('click', () => {
         // const addTo = document.querySelector('form');
         const i = form.querySelectorAll('.input-holder').length + 1;
-        console.log(i);
         if(i > 10)
             return;
         form.appendChild(buildInput(i));
@@ -227,10 +226,8 @@ function buildGenerateButton() {
 }
 
 function generateBoard() {
-    if (!checkInputs()) {
-        console.log('failed');
+    if (!checkInputs())
         return;
-    }
 
     const wordInputs = document.querySelectorAll('input');
 
