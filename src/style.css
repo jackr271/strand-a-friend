@@ -145,15 +145,6 @@ form .input-holder {
     aspect-ratio: 1;
 }
 
-@media screen and (max-width: 768px) {
-
-    .input-holder div {
-        font-size: large;
-        font-weight: 400;
-    }
-   
-}
-
 .letter {
     font-size: xx-large;
     font-weight: 600;
@@ -219,4 +210,20 @@ form .input-holder {
     position: absolute;
     background-color: rgb(112, 186, 255);
     z-index: -1;
+}
+
+@media screen and (max-width: 768px) {
+
+    .input-holder div {
+        font-size: large;
+        font-weight: 400;
+    }
+
+    .letter {
+        font-size: large;
+    }
+   
+    .UI-window {
+        width: 90vw;
+    }
 }

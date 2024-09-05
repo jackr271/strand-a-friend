@@ -55,16 +55,16 @@ function loadMobile() {
         body.innerHTML = '';
         body.appendChild(boardContainer);
         let board = buildBoard(result)
-        displayWords(board);
+        displayWords(board, true);
 
         const regenerateButton = document.querySelector('.run');
         regenerateButton.addEventListener('click', () => {
             board = buildBoard(result);
-            displayWords(board);
+            displayWords(board, true);
         });
 
         window.addEventListener('resize', () => {
-            displayWords(board);
+            displayWords(board, true);
         });
     });
 }

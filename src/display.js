@@ -1,11 +1,20 @@
-export default function displayWords(wordList) {
-    renderWords(wordList);
+export default function displayWords(wordList, isMobile = false) {
+    renderWords(wordList, isMobile);
 }
 
 let isSpan = true;
 const color = `145, 255, 112`;
 
-function renderWords(wordList) {
+function renderWords(wordList, isMobile) {
+
+    let radius = 30;
+    let height = 20;
+
+    if (isMobile) {
+        console.log('small');
+        radius = 20;
+        height = 15;
+    }
 
     const container = document.querySelector('.board');
     isSpan = true;
@@ -25,10 +34,10 @@ function renderWords(wordList) {
             letterHolder.innerText = letter.letter.toUpperCase();
             mini.appendChild(letterHolder);
 
-            drawCircle(mini);
+            drawCircle(mini, radius);
 
             if (prev)
-                drawLineBetweenPoints(prev, mini);
+                drawLineBetweenPoints(prev, mini, height);
             prev = mini;
         }
 
@@ -51,7 +60,7 @@ function clearGrid() {
         circle.remove();
 }
 
-function drawLineBetweenPoints(gridItem1, gridItem2) {
+function drawLineBetweenPoints(gridItem1, gridItem2, height) {
     // console.log(gridItem1);
     // console.log(gridItem1.getBoundingClientRect());
     const start = gridItem1.getBoundingClientRect();
@@ -66,8 +75,6 @@ function drawLineBetweenPoints(gridItem1, gridItem2) {
 
     // Calculate the angle of the line
     const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
-
-    const height = 20;
 
     // Create a line element
     const line = document.createElement('div');
@@ -88,14 +95,13 @@ function drawLineBetweenPoints(gridItem1, gridItem2) {
     document.querySelector('.board').appendChild(line);
 }
 
-function drawCircle(gridItem) {
+function drawCircle(gridItem, radius) {
     console.log('called');
     // console.log(gridItem);
     // console.log(gridItem.getBoundingClientRect());
     const center = getCenter(gridItem.getBoundingClientRect());
     // console.log(center);
     const circle = document.createElement('div');
-    const radius = 30;
 
     circle.classList = 'circle';
     circle.style.width = `${2*radius}px`;
