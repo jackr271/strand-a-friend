@@ -24,6 +24,15 @@ function loadDesktop() {
 
     body.appendChild(inputsContainer);
     body.appendChild(boardContainer);
+
+    const generateButton = document.querySelector('.run');
+    generateButton.addEventListener('click', () => {
+        const result = generateBoard();
+        if (result === null)
+            return;
+
+        displayWords(buildBoard(result));
+    });
     
 }
 
@@ -37,6 +46,27 @@ function loadMobile() {
 
 
     body.appendChild(inputsContainer);
+    const generateButton = document.querySelector('.run');
+    generateButton.addEventListener('click', () => {
+        const result = generateBoard();
+        if (result === null)
+            return;
+
+        body.innerHTML = '';
+        body.appendChild(boardContainer);
+        let board = buildBoard(result)
+        displayWords(board);
+
+        const regenerateButton = document.querySelector('.run');
+        regenerateButton.addEventListener('click', () => {
+            board = buildBoard(result);
+            displayWords(board);
+        });
+
+        window.addEventListener('resize', () => {
+            displayWords(board);
+        });
+    });
 }
 
 
@@ -163,7 +193,7 @@ function buildBoardContainer() {
     container.appendChild(board);
 
     const buttonHolder = buildButtonHolder();
-    buttonHolder.innerHTML = `<button id="run">Generate</button>`;
+    buttonHolder.appendChild(buildGenerateButton());
     container.appendChild(buttonHolder);
 
     return container;
@@ -190,12 +220,8 @@ function checkMobile() {
 
 function buildGenerateButton() {
     const button = document.createElement('button');
-    button.id = 'run';
+    button.className = 'run';
     button.innerText = 'Generate';
-    
-    button.addEventListener('click', () => {
-        generateBoard();
-    });
 
     return button;
 }
@@ -216,15 +242,7 @@ function generateBoard() {
 
     window.removeEventListener('resize',() => {});
 
-    const wordList = buildBoard(words);
-
-    displayWords(wordList);
-
-    window.addEventListener('resize', () => {
-        displayWords(wordList);
-    });
-
-    console.log('passed!');
+    return words;
 
 }
 

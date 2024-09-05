@@ -109,7 +109,7 @@ form .input-holder {
     text-align: center;
 }
 
-#run {
+.run {
     flex: none;
     padding: 2em;
     aspect-ratio: 9 / 2;
