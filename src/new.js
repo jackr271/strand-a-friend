@@ -1,16 +1,19 @@
 import displayWords from "./display";
 import buildBoard from "./board-builder";
+import NewPuzzle from "./user-inputs";
 
 export default function loadGameGenerator() {
 
     const body = document.querySelector('body');
     body.innerHTML = '';
 
-    if (checkMobile())
-        loadMobile();
+    loadMobile();
 
-    else
-        loadDesktop();
+    // if (checkMobile())
+    //     loadMobile();
+
+    // else
+    //     loadDesktop();
 }
 
 
@@ -18,55 +21,77 @@ export default function loadGameGenerator() {
 function loadDesktop() {
 
     const body = document.querySelector('body');
-    const inputsContainer = buildInputsContainer();
+    // const inputsContainer = buildInputsContainer();
+    const inputsContainer = document.createElement('div');
+    inputsContainer.className = 'inputs-container';
     const boardContainer = buildBoardContainer();
 
 
     body.appendChild(inputsContainer);
     body.appendChild(boardContainer);
 
-    const generateButton = document.querySelector('.run');
-    generateButton.addEventListener('click', () => {
-        const result = generateBoard();
-        if (result === null)
-            return;
+    // const generateButton = document.querySelector('.run');
+    // generateButton.addEventListener('click', () => {
+    //     const result = generateBoard();
+    //     if (result === null)
+    //         return;
 
-        displayWords(buildBoard(result));
-    });
+    //     displayWords(buildBoard(result));
+    // });
     
+    const puzzle = new NewPuzzle((value) => {
+        const result = buildBoard(value);
+        console.log(result);
+        displayWords(result);
+    })
+    puzzle.getUserInputs(inputsContainer);
+
 }
 
 function loadMobile() {
 
     const body = document.querySelector('body');
-    const inputsContainer = buildInputsContainer();
+    // const inputsContainer = buildInputsContainer();
+    const inputsContainer = document.createElement('div');
+    inputsContainer.className = 'inputs-container';
     const boardContainer = buildBoardContainer();
 
     inputsContainer.style.width = `90vw`;
 
 
     body.appendChild(inputsContainer);
-    const generateButton = document.querySelector('.run');
-    generateButton.addEventListener('click', () => {
-        const result = generateBoard();
-        if (!result)
-            return;
+    // const generateButton = document.querySelector('.run');
+    // generateButton.addEventListener('click', () => {
+    //     const result = generateBoard();
+    //     if (!result)
+    //         return;
 
+    //     body.innerHTML = '';
+    //     body.appendChild(boardContainer);
+    //     let board = buildBoard(result)
+    //     displayWords(board, true);
+
+    //     const regenerateButton = document.querySelector('.run');
+    //     regenerateButton.addEventListener('click', () => {
+    //         board = buildBoard(result);
+    //         displayWords(board, true);
+    //     });
+
+    //     window.addEventListener('resize', () => {
+    //         displayWords(board, true);
+    //     });
+    // });
+
+    const puzzle = new NewPuzzle((value) => {
+        const result = buildBoard(value);
+        console.log(result);
         body.innerHTML = '';
         body.appendChild(boardContainer);
-        let board = buildBoard(result)
-        displayWords(board, true);
+        displayWords(result);
+    })
+    puzzle.getUserInputs(inputsContainer);
 
-        const regenerateButton = document.querySelector('.run');
-        regenerateButton.addEventListener('click', () => {
-            board = buildBoard(result);
-            displayWords(board, true);
-        });
-
-        window.addEventListener('resize', () => {
-            displayWords(board, true);
-        });
-    });
+    const regenerateButton = document.querySelector('')
 }
 
 

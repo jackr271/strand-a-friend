@@ -3,6 +3,7 @@ import Board from "./board.js";
 
 
 export default function buildBoard(words){
+    console.log(words);
     if (!checkValid(words))
         return FAILED;
 

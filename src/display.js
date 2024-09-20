@@ -6,6 +6,7 @@ let isSpan = true;
 const color = `145, 255, 112`;
 
 function renderWords(wordList, isMobile) {
+    console.log(wordList);
 
     let radius = 30;
     let height = 20;
