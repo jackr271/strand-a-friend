@@ -1,4 +1,4 @@
-@import url(https://fonts.bunny.net/css?family=caveat:400,500,600,700);
+@import url(https://fonts.bunny.net/css?family=amatic-sc:700|caveat:400,500,600,700);
 
 :root {
     --frame-one: url(./img/floating-guy-1.jpeg);
@@ -229,4 +229,57 @@ input.valid {
 
 input.invalid {
     background-color: rgb(255, 242, 242);
+}
+
+#board-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.board {
+    display: grid;
+    grid-template: repeat(8, 1fr) / repeat(6, 1fr);
+    aspect-ratio: 3 / 4;
+
+    
+    
+    .mini {
+        height: 100%;
+        width: 100%;
+        aspect-ratio: 1;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .letter {
+            font-size: 1.5rem;
+            font-family: 'Amatic SC';
+        }
+    }
+
+    .circle {
+        position: absolute;
+        background-image: url(./img/board-images/circle.svg);
+        background-size: cover;
+        /* background-color: rgb(112, 186, 255); */
+        z-index: -1;
+    }
+    
+    .circle.theme-word {
+        background-image: url(./img/board-images/colored-circle.svg);
+        background-size: cover;
+    }
+
+    .line {
+        position: absolute;
+        background-image: url(./img/board-images/line.svg);
+        background-size: cover;
+        /* background-color: rgba(112, 186, 255, 0.8); */
+        z-index: -1;
+    }.theme-word {
+        background-image: url(./img/board-images/colored-line.svg);
+    }
 }

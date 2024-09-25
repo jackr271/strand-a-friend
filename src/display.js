@@ -90,14 +90,14 @@ function drawLineBetweenPoints(gridItem1, gridItem2, height) {
     line.style.transform = `rotate(${angle}deg)`;
 
     if (isSpan)
-        line.style.backgroundColor = `rgba(${color}, 0.8)`;
+        line.classList.add(`theme-word`);
 
     // Append the line to the grid container
     document.querySelector('.board').appendChild(line);
 }
 
 function drawCircle(gridItem, radius) {
-    console.log('called');
+    // console.log('called');
     // console.log(gridItem);
     // console.log(gridItem.getBoundingClientRect());
     const center = getCenter(gridItem.getBoundingClientRect());
@@ -112,7 +112,7 @@ function drawCircle(gridItem, radius) {
     circle.style.left = `${center[0] - radius + window.scrollX}px`;
 
     if (isSpan)
-        circle.style.backgroundColor = `rgba(${color}, 1)`;
+        circle.classList.add(`theme-word`);
 
     // console.log(circle.style.top);
     document.querySelector('.board').appendChild(circle);

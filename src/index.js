@@ -1,21 +1,23 @@
+import './style.css';
 import getUserInputs from './input-handler.js';
 import arrowImage from './img/arrow.png';
 
-document.querySelector('#arrow').src = arrowImage;
+// document.querySelector('#arrow').src = arrowImage;
 
-const [results, resummarize] = await getUserInputs();
-console.log(results);
-console.log(resummarize);
-resummarize();
+// const [results, resummarize] = await getUserInputs();
+// console.log(results);
 
+import buildBoard from './board-builder.js';
+import displayWords from './display.js';
+import loadGameGenerator from './new.js';
 
-// import './style.css';
-// import Board from './board.js';
-// import buildBoard from './board-builder.js';
-// import displayWords from './display.js';
-// import loadGameGenerator from './new.js';
+const results = {
+    words: ['diarrhea', 'buffalowildwings', 'tacobel', 'mcdonalds', 'chipotle']
+};
 
-// loadGameGenerator();
+loadGameGenerator();
+let board = buildBoard(results.words)
+displayWords(board, true);
 
 // window.addEventListener('resize', () => {
 //     loadGameGenerator();

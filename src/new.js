@@ -7,7 +7,9 @@ export default function loadGameGenerator() {
     const body = document.querySelector('body');
     body.innerHTML = '';
 
-    loadMobile();
+    // loadMobile();
+
+    body.appendChild(buildBoardContainer());
 
     // if (checkMobile())
     //     loadMobile();
@@ -150,7 +152,7 @@ function buildSpanHolder() {
 
 function buildButtonHolder() {
     const buttonHolder = document.createElement('div');
-    buttonHolder.classList.add('button-holder');
+    buttonHolder.classList.add('buttons-holder');
     
     return buttonHolder;
 }
