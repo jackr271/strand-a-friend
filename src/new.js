@@ -53,10 +53,10 @@ function loadMobile() {
     const body = document.querySelector('body');
     // const inputsContainer = buildInputsContainer();
     const inputsContainer = document.createElement('div');
-    inputsContainer.className = 'inputs-container';
+    inputsContainer.className = 'UI-window';
     const boardContainer = buildBoardContainer();
 
-    inputsContainer.style.width = `90vw`;
+    // inputsContainer.style.width = `90vw`;
 
 
     body.appendChild(inputsContainer);
@@ -91,7 +91,7 @@ function loadMobile() {
     })
     puzzle.getUserInputs(inputsContainer);
 
-    const regenerateButton = document.querySelector('')
+    // const regenerateButton = document.querySelector('')
 }
 
 

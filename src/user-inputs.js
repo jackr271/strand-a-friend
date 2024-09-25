@@ -1,6 +1,6 @@
 import { fadeIn, fadeOut } from "./fade.js";
 
-const DURATION = 10;
+const DURATION = 250;
 
 
 export default class NewPuzzle {
@@ -24,6 +24,8 @@ export default class NewPuzzle {
             this.#summarize(containerElement);
             return;
         }
+
+        const inputHolder = document.createElement('div');
 
         const userInput = this.userInputs[index];
 
@@ -90,7 +92,14 @@ class SingleLineInput {
 
         const nextButtonHolder = buildHolder([buildButton('next-button', 'Next')]);
 
-        fadeIn(containerElement, [labelHolder, inputHolder, nextButtonHolder], DURATION);
+        const sectionHolder = buildSectionHolder([labelHolder, inputHolder, nextButtonHolder]);
+
+        fadeIn(containerElement, [sectionHolder], DURATION);
+
+        setTimeout( () => {
+            console.log(document.querySelector('input'));
+            document.querySelector('input').focus();
+        }, DURATION*3);
         
         return nextButtonHolder.querySelector('button');
     }
@@ -141,7 +150,11 @@ class MultiLineInput {
 
         const nextButtonHolder = buildHolder([buildButton('next-button', 'Next')]);
 
-        fadeIn(containerElement, [labelHolder, inputHolder, nextButtonHolder], DURATION);
+        const sectionHolder = buildSectionHolder([labelHolder, inputHolder, nextButtonHolder]);
+
+        fadeIn(containerElement, [sectionHolder], DURATION);
+
+        setTimeout( () => {document.querySelector('textarea').focus();}, DURATION*1.5);
         
         return nextButtonHolder.querySelector('button');
     }
@@ -193,9 +206,13 @@ class CollectionInput {
 
         const nextButtonHolder = buildHolder([buildButton('next-button', 'Next')]);
 
-        fadeIn(containerElement, [labelHolder, inputHolder, nextButtonHolder], DURATION);
+        const sectionHolder = buildSectionHolder([labelHolder, inputHolder, nextButtonHolder]);
+
+        fadeIn(containerElement, [sectionHolder], DURATION);
+
+        setTimeout( () => {document.querySelector('input').focus();}, DURATION*1.5);
         
-        console.log(nextButtonHolder.querySelector('button'));
+        console.log('hi');
         return nextButtonHolder.querySelector('button');
     }
 
@@ -211,23 +228,27 @@ class CollectionInput {
         const wordsUI = document.createElement('div');
         wordsUI.className = 'words-container';
 
-        wordsUI.appendChild(buildHolder([buildLabel(this.name, this.name)]));
+        // wordsUI.appendChild(buildHolder([buildLabel(this.name, this.name)]));
 
         wordsUI.appendChild(buildHolder([buildCharCounter('total', `Total Letter Count: ${this.themeWord === '' ? 0 : 48}/48`)]));
 
         const themeWordInput = buildInput('theme-word');
         themeWordInput.value = this.themeWord;
         this.#addCharCounting(themeWordInput);
-        wordsUI.appendChild(buildHolder([buildLabel('Theme Word', 'theme-word'), themeWordInput, buildCharCounter('theme-word', this.themeWord.length)]));
+        const themeWordHolder = buildHolder([buildLabel('Theme\nWord', 'theme-word'), themeWordInput, buildCharCounter('theme-word', this.themeWord.length)]);
+        themeWordHolder.classList.add('word-holder');
+        wordsUI.appendChild(themeWordHolder);
 
-        console.log(this.words);
+
 
         for (const key in this.words) {
             const word = this.words[key + 1];
             const wordInput = buildInput(`word-${key + 1}`);
             this.#addCharCounting(wordInput);
             wordInput.value = this.words[key];
-            wordsUI.appendChild(buildHolder([buildLabel(`Word ${Number(key) + 1}:`, `word-${Number(key) + 1}`), wordInput, buildCharCounter(`word-${Number(key) + 1}`, this.words[key].length)]));
+            const horHolder = buildHolder([buildLabel(`Word ${Number(key) + 1}:`, `word-${Number(key) + 1}`), wordInput, buildCharCounter(`word-${Number(key) + 1}`, this.words[key].length)]);
+            horHolder.classList.add('word-holder');
+            wordsUI.appendChild(horHolder);
         }
 
         const addWordButton = buildButton('add-word', 'Add Word');
@@ -239,8 +260,10 @@ class CollectionInput {
 
             const newInput = buildInput(`word-${inputNum}`);
             this.#addCharCounting(newInput);
-
-            wordsUI.insertBefore(buildHolder([buildLabel(`Word ${inputNum}:`, `word-${inputNum}`), newInput, buildCharCounter(`word-${inputNum}`)]), addWordButton);
+            const horHolder = buildHolder([buildLabel(`Word ${inputNum}:`, `word-${inputNum}`), newInput, buildCharCounter(`word-${inputNum}`)]);
+            horHolder.classList.add('word-holder');
+            wordsUI.insertBefore(horHolder, addWordButton);
+            newInput.focus();
         });
 
         wordsUI.appendChild(addWordButton);
@@ -368,4 +391,15 @@ function buildCharCounter(inputName, startingNum = 0) {
     charCounter.id = `char-counter-${inputName}`;
 
     return charCounter;
+}
+
+function buildSectionHolder(elementArr) {
+    const sectionHolder = document.createElement('div');
+    sectionHolder.className = 'section-holder';
+
+    for (const element of elementArr) {
+        sectionHolder.appendChild(element);
+    }
+
+    return sectionHolder
 }

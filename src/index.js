@@ -1,14 +1,25 @@
-import './style.css';
-import Board from './board.js';
-import buildBoard from './board-builder.js';
-import displayWords from './display.js';
-import loadGameGenerator from './new.js';
+import getUserInputs from './input-handler.js';
+import arrowImage from './img/arrow.png';
 
-loadGameGenerator();
+document.querySelector('#arrow').src = arrowImage;
 
-window.addEventListener('resize', () => {
-    loadGameGenerator();
-});
+const [results, resummarize] = await getUserInputs();
+console.log(results);
+console.log(resummarize);
+resummarize();
+
+
+// import './style.css';
+// import Board from './board.js';
+// import buildBoard from './board-builder.js';
+// import displayWords from './display.js';
+// import loadGameGenerator from './new.js';
+
+// loadGameGenerator();
+
+// window.addEventListener('resize', () => {
+//     loadGameGenerator();
+// });
 
 // // for (let i = 0; i < 48; i++) {
 // //     const mini = document.createElement('div');
