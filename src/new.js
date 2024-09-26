@@ -16,6 +16,9 @@ export default function loadGameGenerator() {
 
     // else
     //     loadDesktop();
+
+    return body.querySelectorAll('button');
+
 }
 
 
@@ -102,8 +105,15 @@ function buildInputsContainer() {
     const container = buildContainer();
     container.id = 'inputs-container';
 
-    const titleHolder = buildTitleHolder('input-side');
+    const titleHolder = document.createElement('div');
+    titleHolder.id = 'title-holder';
+    titleHolder.classList.add('horizotal-holder');
     container.appendChild(titleHolder);
+
+    const hintHolder = document.createElement('div');
+    hintHolder.id = 'hint-holder';
+    hintHolder.classList.add('horizotal-holder');
+    container.appendChild(hintHolder);
 
     container.appendChild(buildSpanHolder());
 
@@ -213,13 +223,21 @@ function buildBoardContainer() {
         board.appendChild(mini);
     };
 
-    const titleHolder = buildTitleHolder('board-side'); 
+    const titleHolder = document.createElement('div');
+    titleHolder.id = 'title-holder';
+    titleHolder.classList.add('horizotal-holder');
     container.appendChild(titleHolder);
+
+    const hintHolder = document.createElement('div');
+    hintHolder.id = 'hint-holder';
+    hintHolder.classList.add('horizotal-holder');
+    container.appendChild(hintHolder);
 
     container.appendChild(board);
 
     const buttonHolder = buildButtonHolder();
-    buttonHolder.appendChild(buildGenerateButton());
+    buttonHolder.innerHTML = `<div class="horizontal-holder"><button id="regenerate">Regenerate</button></div>
+        <div class="horizontal-holder"><button id="edit">Edit Puzzle</button><button id="share">Share Puzzle</button></div>`;
     container.appendChild(buttonHolder);
 
     return container;
@@ -247,7 +265,7 @@ function checkMobile() {
 function buildGenerateButton() {
     const button = document.createElement('button');
     button.className = 'run';
-    button.innerText = 'Generate';
+    button.innerText = 'Regenerate';
 
     return button;
 }

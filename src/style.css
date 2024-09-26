@@ -3,6 +3,8 @@
 :root {
     --frame-one: url(./img/floating-guy-1.jpeg);
     --frame-two: url(./img/floating-guy-2.jpeg);
+
+    --animation-duration: 500ms;
 }
 
 * {
@@ -107,7 +109,7 @@ button {
 #progress-bar {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     padding: 5px 4px;
 
     background-image: url(./img/progress-bar.png);
@@ -173,12 +175,12 @@ button {
 
 .inputs-container.active {
     transform: translateX(0); /* Slide to original position */
-    transition: transform 1s ease;
+    transition: transform var(--animation-duration) ease;
   }
 
   .inputs-container.deactive {
     transform: translateX(-100vw); /* Start off-screen */
-    transition: transform 1s ease;
+    transition: transform var(--animation-duration) ease;
 }
 
 .collection-input-container {
@@ -282,4 +284,33 @@ input.invalid {
     }.theme-word {
         background-image: url(./img/board-images/colored-line.svg);
     }
+}
+
+.buttons-holder {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    align-items: stretch;
+}
+
+#title-holder {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+#hint-holder {
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.UI-window.deactive {
+    transform: translateX(-100vw); /* Start off-screen */
+    transition: transform var(--animation-duration) ease;
+}
+
+.UI-window.active {
+    transform: translateX(0); 
+    transition: transform var(--animation-duration) ease;
 }

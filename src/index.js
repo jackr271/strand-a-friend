@@ -2,22 +2,47 @@ import './style.css';
 import getUserInputs from './input-handler.js';
 import arrowImage from './img/arrow.png';
 
-// document.querySelector('#arrow').src = arrowImage;
+document.querySelector('#arrow').src = arrowImage;
 
-// const [results, resummarize] = await getUserInputs();
-// console.log(results);
+let [results, resummarize] = await getUserInputs();
+console.log(results);
 
 import buildBoard from './board-builder.js';
 import displayWords from './display.js';
 import loadGameGenerator from './new.js';
+import { slideInWindow, slideOutWindow } from './animation-handler.js';
 
-const results = {
-    words: ['diarrhea', 'buffalowildwings', 'tacobel', 'mcdonalds', 'chipotle']
-};
+async function loadBoard() {
+    await slideOutWindow();
+    const [regenerateButton, editButton, shareButton] = loadGameGenerator();
+    let board = buildBoard(results.words)
+    // await slideInWindow();
+    displayWords(board, results, true);
+    console.log('if first, wrong');
+    // setTimeout( () => {
+    //     document.querySelector('.UI-window').style.visibility = 'visible';
+    // }, 2000);
 
-loadGameGenerator();
-let board = buildBoard(results.words)
-displayWords(board, true);
+    window.addEventListener('resize', () => {
+        displayWords(board, results, true);
+    })
+
+    regenerateButton.addEventListener('click', () => {
+        board = buildBoard(results.words)
+        displayWords(board, results, true);
+    });
+
+    editButton.addEventListener('click', async () => {
+        results = await resummarize();
+        loadBoard();
+    });
+}
+
+loadBoard();
+
+// const [regenerateButton, editButton, shareButton] = loadGameGenerator();
+// let board = buildBoard(results.words)
+// displayWords(board, results, true);
 
 // window.addEventListener('resize', () => {
 //     loadGameGenerator();

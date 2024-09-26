@@ -1,7 +1,7 @@
-export {slideInInput, slideOutInput};
+export {slideInInput, slideOutInput, slideInWindow, slideOutWindow};
 
 
-const DURATION = 1000;
+const DURATION = 500;
 
 async function slideInInput() {
     const container = document.querySelector('.inputs-container');
@@ -33,4 +33,23 @@ async function increasePogressBar() {
     progressBar.appendChild(progressFill);
     await delay(DURATION);
     progressFill.classList.toggle('active');
+}
+
+async function slideOutWindow() {
+    const container = document.querySelector('.UI-window');
+    container.classList.toggle('deactive');
+    await delay(DURATION);
+    // document.querySelector('.body').style.visibility = 'hidden';
+    // container.classList.toggle('deactive');
+    // await delay(20)
+}
+
+async function slideInWindow() {
+    // await delay(2000);
+    const container = document.querySelector('.UI-window');
+    container.classList.toggle('deactive');
+    container.classList.toggle('active');
+    // container.classList.toggle('active');
+    await delay(DURATION);
+    container.classList.toggle('active');
 }

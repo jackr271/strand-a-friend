@@ -3,7 +3,8 @@
 import './style.css';
 
 import InputTypes from "./input-types.js";
-import { slideInInput, slideOutInput } from "./animation-handler.js";
+import { slideInInput, slideInWindow, slideOutInput } from "./animation-handler.js";
+import arrowImage from './img/arrow.png';
 
 export default async function getUserInputs() {
     const inputTypes = new InputTypes();
@@ -14,7 +15,25 @@ export default async function getUserInputs() {
         puzzleInfo[key] = await getUserInput(inputHandler);
     }
 
-    return [await summarizeInfo(puzzleInfo, inputTypes), () => {summarizeInfo(puzzleInfo, inputTypes)}];
+    return [await summarizeInfo(puzzleInfo, inputTypes), async () => {
+        document.querySelector('body').innerHTML = `<div class="UI-window form-window deactive">
+        <div class="horizontal-holder">
+            <div id="progress-bar">
+                <div class="progress-filled active"></div>
+                <div class="progress-filled active"></div>
+                <div class="progress-filled active"></div>
+                <div class="progress-filled active"></div>
+            </div>
+        </div>
+        <div class="inputs-container active">
+        </div>
+        <div class="horizontal-holder">
+            <button class="next"><img id="arrow" width="50px" alt="arrow"></button>
+        </div>
+        </div>`;
+        document.querySelector('#arrow').src = arrowImage;
+        return await summarizeInfo(puzzleInfo, inputTypes, false);
+    }];
 }
 
 
@@ -42,7 +61,7 @@ async function waitForButtonClick(button) {
     });
 }
 
-async function summarizeInfo(puzzleInfo, inputTypes) {
+async function summarizeInfo(puzzleInfo, inputTypes, firstCall = true) {
     const container = document.querySelector('.inputs-container');
     container.innerHTML = '';
     const inputHandlers = {};
@@ -57,7 +76,10 @@ async function summarizeInfo(puzzleInfo, inputTypes) {
         generateButton = inputHandlers[key].loadInput(containers[key], false);
     }
 
-    await slideInInput();
+    if (firstCall)
+        await slideInInput();
+    else
+        await slideInWindow();
 
     let flag = false;
     const results = {};
@@ -71,8 +93,6 @@ async function summarizeInfo(puzzleInfo, inputTypes) {
         }
 
     }
-
-    await slideOutInput();
 
     return results;
 }

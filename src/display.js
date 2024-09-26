@@ -1,12 +1,17 @@
-export default function displayWords(wordList, isMobile = false) {
+export default function displayWords(wordList, puzzleInfo, isMobile = false) {
+
+    document.querySelector('#title-holder').innerText = puzzleInfo.title;
+    document.querySelector('#hint-holder').innerText = puzzleInfo.hint;
+
     renderWords(wordList, isMobile);
+    console.log('DONE!');
+
 }
 
 let isSpan = true;
 const color = `145, 255, 112`;
 
 function renderWords(wordList, isMobile) {
-    console.log(wordList);
 
     let radius = 30;
     let height = 20;

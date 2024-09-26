@@ -233,7 +233,7 @@ class Collection {
 
 function addInputListeners(input) {
     input.addEventListener('input', () => {
-        if (input.value.length >= 4) {
+        if (input.value.length >= 4 || input.value.length === 0) {
             input.className = 'valid';
         }
         let sum = 0;
@@ -245,7 +245,7 @@ function addInputListeners(input) {
     });
 
     input.addEventListener('focusout', ()=> {
-        if (input.value.length < 4) {
+        if (input.value.length < 4 && input.value.length != 0) {
             input.className = 'invalid';
         }
     });
